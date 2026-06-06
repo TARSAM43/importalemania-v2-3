@@ -1,0 +1,4 @@
+[build]
+  base = "landing-optimizada"
+  command = "pnpm install && pnpm run build"
+  publish = ".next"

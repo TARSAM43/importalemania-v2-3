@@ -9,7 +9,7 @@ const BRANDS = [
   { id: "bmw", label: "BMW" },
   { id: "audi", label: "Audi" },
   { id: "mercedes", label: "Mercedes-Benz" },
-  { id: "volkswagen", label: "Volkswagen" },h
+  { id: "volkswagen", label: "Volkswagen" },
   { id: "porsche", label: "Porsche" },
   { id: "otros", label: "Otros" },
 ];

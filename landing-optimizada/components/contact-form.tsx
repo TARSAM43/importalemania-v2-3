@@ -34,6 +34,7 @@ export function ContactForm() {
     otherBrand: "",
     model: "",
     budget: "",
+    consentGiven: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -45,9 +46,10 @@ export function ContactForm() {
   const isStep2Valid = formData.brand !== "" && (formData.brand !== "otros" || formData.otherBrand.trim() !== "");
   const isStep3Valid = formData.model.trim() !== "";
   const isStep4Valid = formData.budget !== "";
-  // Steps 5 and 6 are informational/confirmation — always valid
+  // Step 5 is informational — always valid
   const isStep5Valid = true;
-  const isStep6Valid = true;
+  // Step 6 requires RGPD consent checkbox to be checked
+  const isStep6Valid = formData.consentGiven === true;
 
   const canContinue = useCallback(() => {
     switch (step) {
@@ -404,9 +406,44 @@ export function ContactForm() {
                       {submitError}
                     </div>
                   )}
-                  <p className="text-xs text-[#5A6A7A] text-center">
-                    Al enviar aceptas que un importador te contacte con opciones para tu búsqueda.
-                  </p>
+                  {/* RGPD Consent checkbox */}
+                  <label className="flex items-start gap-3 cursor-pointer group mt-2">
+                    <div className="relative mt-0.5 shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={formData.consentGiven}
+                        onChange={(e) =>
+                          setFormData({ ...formData, consentGiven: e.target.checked })
+                        }
+                        className="sr-only"
+                      />
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200
+                          ${formData.consentGiven
+                            ? "bg-[#FF6A00] border-[#FF6A00]"
+                            : "bg-white border-[#CBD5E0] group-hover:border-[#FF6A00]/60"
+                          }`}
+                      >
+                        {formData.consentGiven && (
+                          <Check className="w-3 h-3 text-white" />
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-xs text-[#5A6A7A] leading-relaxed">
+                      He leído y acepto la{" "}
+                      <a
+                        href="/privacidad"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#FF6A00] hover:underline font-medium"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Política de privacidad
+                      </a>
+                      {" "}y autorizo que un importador verificado se ponga en contacto conmigo con opciones
+                      para mi búsqueda. <span className="text-[#FF6A00]">*</span>
+                    </span>
+                  </label>
                 </div>
               )}
 
@@ -430,6 +467,7 @@ export function ContactForm() {
                     onClick={handleButtonClick}
                     disabled={!isStep6Valid || isSubmitting}
                     aria-disabled={!isStep6Valid || isSubmitting}
+                    title={!formData.consentGiven ? "Debes aceptar la política de privacidad para continuar" : undefined}
                     className="flex-1 h-14 rounded-xl bg-[#FF6A00] hover:bg-[#e55f00] active:bg-[#d45500] text-white font-bold text-lg shadow-[0_8px_30px_rgba(255,106,0,0.35)] hover:shadow-[0_12px_40px_rgba(255,106,0,0.45)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200 flex items-center justify-center select-none"
                     style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
                   >
